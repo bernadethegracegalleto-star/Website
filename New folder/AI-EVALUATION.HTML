@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Evaluation – Guimaras Insight Engine</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6f9;
+      color: #333;
+    }
+
+    header {
+      background: #0b3d91;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+    }
+
+    header h1 { font-size: 20px; color: #FFD54F; }
+    header a { color: #fff; text-decoration: none; margin-left: 20px; font-size: 14px; }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .page-title { font-size: 28px; margin-bottom: 10px; color: #0b3d91; }
+    .subtitle { color: #666; margin-bottom: 30px; }
+
+    .summary-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+
+    .ai-score {
+      font-size: 42px;
+      font-weight: 600;
+      color: #28a745;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: #28a745;
+      color: #fff;
+      border-radius: 20px;
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+
+    .criteria {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .criteria-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+
+    .rating {
+      font-size: 24px;
+      font-weight: 600;
+      color: #FFD54F;
+    }
+
+    .ai-text {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .actions {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 30px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-primary { background: #0b3d91; color: #fff; }
+    .btn-secondary { background: #FFD54F; color: #000; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>GUIMARAS INSIGHT ENGINE</h1>
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="explore.html">Explore</a>
+    <a href="signin.html">Sign Out</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <h1 class="page-title">AI Evaluation Result</h1>
+  <p class="subtitle">
+    Provider: <strong id="providerName"></strong> |
+    Category: <strong id="providerType"></strong>
+  </p>
+
+  <div class="summary-card">
+    <h2>Overall AI Score</h2>
+    <div class="ai-score" id="aiScore"></div>
+    <div class="badge" id="aiBadge"></div>
+  </div>
+
+  <div class="criteria">
+    <div class="criteria-card"><h3>Product Quality</h3><div class="rating">⭐ 4.8</div></div>
+    <div class="criteria-card"><h3>Customer Satisfaction</h3><div class="rating">⭐ 4.7</div></div>
+    <div class="criteria-card"><h3>Authenticity</h3><div class="rating">⭐ 4.6</div></div>
+    <div class="criteria-card"><h3>Value for Money</h3><div class="rating">⭐ 4.5</div></div>
+  </div>
+
+<!-- USER VS AI COMPARISON -->
+<div class="ai-text" style="margin-bottom: 30px;">
+  <h2>User Rating vs AI Rating</h2>
+
+  <p>
+    <strong>User Average Rating:</strong>
+    <span id="userRating"></span>
+  </p>
+
+  <p>
+    <strong>AI Rating:</strong>
+    <span id="aiRatingCompare"></span>
+  </p>
+
+  <div style="margin-top: 15px;">
+    <div style="background:#eee; border-radius:20px; overflow:hidden;">
+      <div id="userBar"
+           style="height:14px; background:#FFD54F; width:0%;"></div>
+    </div>
+
+    <div style="background:#eee; border-radius:20px; overflow:hidden; margin-top:8px;">
+      <div id="aiBar"
+           style="height:14px; background:#0b3d91; width:0%;"></div>
+    </div>
+  </div>
+
+  <p id="comparisonText" style="margin-top:15px; font-weight:500;"></p>
+</div>
+
+  <div class="ai-text">
+    <h2>AI-Generated Evaluation Summary</h2>
+    <p id="aiSummary"></p>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">
+        Back to Dashboard
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const provider = JSON.parse(localStorage.getItem("selectedProvider"));
+
+  if (!provider) {
+    alert("No provider selected.");
+    window.location.href = "category.html";
+  }
+
+  document.getElementById("providerName").innerText = provider.name;
+  document.getElementById("providerType").innerText = provider.type;
+
+  const scoreValue = provider.rating.replace("⭐", "").trim();
+  document.getElementById("aiScore").innerText = scoreValue + " / 5.0";
+
+  document.getElementById("aiBadge").innerText =
+    scoreValue >= 4.6 ? "Highly Recommended" :
+    scoreValue >= 4.3 ? "Recommended" : "Moderate";
+
+  document.getElementById("aiSummary").innerText =
+    `${provider.name} demonstrates strong performance in ${provider.type.toLowerCase()}.
+     The AI Insight Engine analyzed service quality, reliability, and consistency.
+     Based on the computed score, this provider is recommended for consumers
+     seeking trusted local products and services in Guimaras.`;
+</script>
+
+<script>
+  // Simulated user rating (crowd-based)
+  const userRating = (Math.random() * (4.8 - 4.2) + 4.2).toFixed(1);
+
+  // AI rating already calculated earlier
+  const aiRating = parseFloat(scoreValue);
+
+  document.getElementById("userRating").innerText = userRating + " / 5.0";
+  document.getElementById("aiRatingCompare").innerText = aiRating + " / 5.0";
+
+  // Bar visualization
+  document.getElementById("userBar").style.width = (userRating / 5) * 100 + "%";
+  document.getElementById("aiBar").style.width = (aiRating / 5) * 100 + "%";
+
+  // Comparison insight
+  let comparisonMessage = "";
+
+  if (Math.abs(userRating - aiRating) <= 0.2) {
+    comparisonMessage =
+      "User feedback closely aligns with the AI evaluation, indicating consistent performance.";
+  } else if (userRating > aiRating) {
+    comparisonMessage =
+      "Users rated this provider slightly higher than the AI assessment, suggesting positive customer perception.";
+  } else {
+    comparisonMessage =
+      "The AI rating is more conservative than user feedback, highlighting potential quality risks.";
+  }
+
+  document.getElementById("comparisonText").innerText = comparisonMessage;
+
+  if (localStorage.getItem("isLoggedIn") !== "true") {
+    window.location.href = "signin.html";
+  }
+  
+</script>
+
+</script>
+</body>
+</html>

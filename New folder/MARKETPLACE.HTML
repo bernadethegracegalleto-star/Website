@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Marketplace</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body { margin:0; font-family:Poppins; background:#fafafa; }
+.container { max-width:1200px; margin:auto; padding:40px; }
+.back { border:none; background:none; color:#0f3d68; font-weight:600; cursor:pointer; margin-bottom:20px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:25px; }
+
+.card {
+  background:white;
+  border-radius:14px;
+  padding:15px;
+  box-shadow:0 8px 20px rgba(0,0,0,.05);
+}
+
+.card img {
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  border-radius:12px;
+}
+
+.card h3 { color:#0f3d68; margin:10px 0; }
+button { width:100%; padding:10px; border:none; background:#0f3d68; color:white; border-radius:20px; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <button class="back" onclick="history.back()">← Back to Categories</button>
+  <h2 id="title">Marketplace</h2>
+
+  <div class="grid">
+
+    <!-- AGRICULTURAL -->
+    <div class="card" data-category="Agricultural">
+      <img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2">
+      <h3>Export Quality Mangoes</h3>
+      <p>Jordan, Guimaras</p>
+      <span>⭐ 4.9 (128 reviews)</span>
+      <button>View Details</button>
+    </div>
+
+    <!-- CRAFTS -->
+    <div class="card" data-category="Crafts">
+      <img src="https://images.unsplash.com/photo-1593032465171-8a0b84c7a3b2">
+      <h3>Bariw Tote Bag</h3>
+      <p>San Lorenzo, Guimaras</p>
+      <span>⭐ 4.7 (98 reviews)</span>
+      <button>View Details</button>
+    </div>
+
+    <!-- TOURISM -->
+    <div class="card" data-category="Tourism">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e">
+      <h3>Alubihod Beach Resort</h3>
+      <p>Nueva Valencia, Guimaras</p>
+      <span>⭐ 4.8 (210 reviews)</span>
+      <button>View Details</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const category = params.get("category");
+
+if (category) {
+  document.getElementById("title").textContent = category + " Marketplace";
+  document.querySelectorAll(".card").forEach(card => {
+    card.style.display =
+      card.dataset.category === category ? "block" : "none";
+  });
+}
+</script>
+
+</body>
+</html>
